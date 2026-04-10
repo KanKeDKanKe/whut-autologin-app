@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">WHUT 自动登录</string>
+    <string name="status_template">在线: %1$s | 目标网络: %2$s | Portal: %3$s | 已暂停: %4$s</string>
+</resources>

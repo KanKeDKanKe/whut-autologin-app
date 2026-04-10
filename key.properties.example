@@ -1,0 +1,6 @@
+# Copy this file to key.properties and fill your real values.
+# storeFile can be absolute path or path relative to project root.
+storeFile=keystore/release.jks
+storePassword=CHANGE_ME
+keyAlias=whut_release
+keyPassword=CHANGE_ME
