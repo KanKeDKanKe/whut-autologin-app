@@ -1,97 +1,97 @@
-# WHUT 自动登录 App（MVP）
+# WHUT AutoLogin
 
-## 项目简介
+> 🌐 武汉理工大学校园网自动登录 Android 应用 — 断网自动重连，开机即守护。
 
-这是一个面向武汉理工校园网场景的 Android 自动登录应用（Kotlin）。  
-核心能力：
-
-- 本地配置账号参数（DataStore）
-- 网络探测与 Portal 识别
-- 自动调用登录接口（含多路径容错）
-- 前台服务常驻检测（网络变化触发 + 周期保底检查）
-- 欠费识别后自动暂停并通知
-- 本地状态与日志查看、日志清空
-- 开机恢复（`BOOT_COMPLETED` / `MY_PACKAGE_REPLACED`）
-
-项目路径：`E:/whut-autologin-app`
-
-## 目录结构
-
-- `app/src/main/java/com/whut/autologin/net/PortalClient.kt`：Portal 探测与登录逻辑
-- `app/src/main/java/com/whut/autologin/service/AutoLoginService.kt`：前台服务与自动检测调度
-- `app/src/main/java/com/whut/autologin/service/BootReceiver.kt`：开机恢复
-- `app/src/main/java/com/whut/autologin/data/*`：配置与运行态持久化
-- `app/src/main/java/com/whut/autologin/MainActivity.kt`：主界面交互
-
-## 本地运行
-
-1. 用 Android Studio 打开 `E:/whut-autologin-app`
-2. 等待 Gradle 同步
-3. 连接真机或模拟器后运行 `app` 模块
-
-## 打包 Debug APK
-
-- Android Studio 菜单：`Build -> Build APK(s)`
-- 输出路径：`app/build/outputs/apk/debug/app-debug.apk`
-
-## 打包签名 Release APK
-
-### 方案 A（推荐，IDE 操作）
-
-1. Android Studio：`Build -> Generate Signed Bundle / APK...`
-2. 选择 `APK`
-3. 首次可点 `Create new...` 新建 keystore
-4. 选择 `release` 构建并完成打包
-
-### 方案 B（脚本/终端）
-
-1. 生成 keystore 与 `key.properties`
-   - `powershell -ExecutionPolicy Bypass -File .\scripts\generate-release-keystore.ps1`
-   - 如未识别 Java，可补 `-JavaHome "C:\Path\To\Android Studio\jbr"`
-2. 构建 release
-   - `.\gradlew.bat assembleRelease`
-   - 或：`powershell -ExecutionPolicy Bypass -File .\scripts\build-apk.ps1 -Variant Release`
-3. 输出路径
-   - `app/build/outputs/apk/release/app-release.apk`
-
-## 上传 GitHub 前检查
-
-请不要上传以下文件：
-
-- `keystore/release.jks`
-- `key.properties`
-- `local.properties`
-- `.gradle/`、`.kotlin/`、`**/build/`、`.idea/`
-
-项目内已通过 `.gitignore` 默认忽略上述敏感/缓存文件。
-
-## 快速上传命令
-
-```bash
-git init
-git branch -M main
-git add .
-git commit -m "Initial WHUT Auto Login app"
-git remote add origin <your-repo-url>
-git push -u origin main
-```
-
-## 注意事项
-
-- `keystore` 和签名密码必须妥善备份，丢失后无法无缝升级已发布应用。
-- 校园网 Portal 参数/接口若调整，请重点修改：
-  - `app/src/main/java/com/whut/autologin/net/PortalClient.kt`
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![Android](https://img.shields.io/badge/Android-8.0+-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![GitHub](https://img.shields.io/badge/GitHub-repo-181717?logo=github)](https://github.com/KanKeDKanKe/whut-autologin-app)
 
 ---
 
-## English (Brief)
+## ✨ 功能亮点
 
-An Android app for WHUT captive-portal auto login with:
+| 功能 | 说明 |
+|------|------|
+| 🔄 **自动登录** | 检测到未认证的校园网门户后，自动完成登录流程 |
+| 📡 **网络感知** | Wi-Fi 切换 / 网络变化时即时触发检测，配合周期轮询兜底 |
+| 💰 **欠费保护** | 识别欠费关键词后自动暂停并推送通知，避免无效重试 |
+| 🔁 **开机恢复** | 监听 `BOOT_COMPLETED`，设备重启后自动恢复守护 |
+| 🛡️ **前台服务** | 以前台通知保持存活，显示实时状态 |
+| 📋 **状态面板** | 应用内查看在线状态、最近检测结果与运行日志 |
 
-- DataStore config
-- Portal detection + login API calls
-- Foreground auto-check service (network callback + periodic checks)
-- Billing-aware pause + notification
-- Boot restore and runtime logs
+## 📱 适配范围
 
-Build signed release via Android Studio (`Generate Signed Bundle / APK`) or scripts in `scripts/`.
+- **最低版本**: Android 8.0 (API 26)
+- **目标 SDK**: Android 14 (API 34, `targetSdk=34`)
+- **实测环境**: Android 15（WHUT-DORM）
+- **门户适配**: 武汉理工 ePortal 系列（`172.30.21.100`）
+
+> [!NOTE]
+> 不同 ROM / 厂商系统对后台服务的管控策略不同，部分深度定制系统（如 MIUI、ColorOS）可能需要手动关闭电池优化或允许自启动。
+
+## ⚠️ 免责声明
+
+- 本项目代码与文档为 **纯 AI 创作** 产物，仅在 **WHUT-DORM** 场景完成实机验证。
+- 对其他网络环境或门户接口 **不保证开箱即用**。
+- 本项目仅供学习交流，使用者需自行承担因使用本工具产生的一切后果。
+
+## 🚀 快速开始
+
+### 1. 安装
+
+从 [Releases](https://github.com/KanKeDKanKe/whut-autologin-app/releases) 下载最新 APK 安装，或 clone 后用 Android Studio 自行构建。
+
+### 2. 配置
+
+打开应用，填写以下必要信息：
+
+| 配置项 | 说明 | 默认值 |
+|--------|------|--------|
+| **账号** | 校园网登录账号 | *必填* |
+| **密码** | 校园网登录密码 | *必填* |
+| 域（Domain） | 运营商域参数，通常留空 | 空 |
+| Portal Base | ePortal 基础地址 | 自动探测 |
+| 检测 URL | 用于判断网络是否在线 | `http://1.1.1.1` |
+| SSID 匹配正则 | 匹配目标 Wi-Fi 名称 | `^WHUT.*$` |
+| Portal Host 正则 | 匹配门户重定向地址 | `172.30.21.100` |
+| 在线检查间隔 | 已在线时的周期检测间隔（秒） | 按需调整 |
+| 失败重试间隔 | 登录失败后的重试间隔（秒） | 按需调整 |
+
+### 3. 启动
+
+保存配置 → 开启「自动检测服务」→ 完成 🎉
+
+## 🏗️ 项目结构
+
+```text
+app/src/main/java/com/whut/autologin/
+├── MainActivity.kt           # 主界面：配置表单 + 状态面板
+├── WhutAutoLoginApp.kt        # Application 入口
+├── data/
+│   ├── AppConfig.kt           # 配置数据模型
+│   ├── ConfigStore.kt         # 配置持久化（DataStore）
+│   ├── RuntimeState.kt        # 运行时状态模型
+│   ├── StateStore.kt          # 状态持久化
+│   └── Stores.kt              # DataStore 实例管理
+├── net/
+│   ├── PortalClient.kt        # 门户交互核心：探测、解析、登录
+│   └── PortalModels.kt        # 门户数据模型
+└── service/
+    ├── AutoLoginService.kt    # 前台守护服务
+    └── BootReceiver.kt        # 开机自启广播接收器
+```
+
+## 🤝 适配与定制
+
+本项目针对 **WHUT ePortal** 门户风格开发。如需适配其他学校：
+
+1. 修改 [`PortalClient.kt`](app/src/main/java/com/whut/autologin/net/PortalClient.kt) 中的门户交互逻辑
+2. 调整默认的 SSID / Portal Host 匹配模式
+3. 如门户协议差异较大，可能需要调整 [`PortalModels.kt`](app/src/main/java/com/whut/autologin/net/PortalModels.kt)
+
+欢迎 Fork 并提交适配 PR！
+
+## 📄 License
+
+[MIT License](LICENSE)
